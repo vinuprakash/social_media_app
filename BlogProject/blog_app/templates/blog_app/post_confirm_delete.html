@@ -1,0 +1,8 @@
+{% extends 'blog_project/base.html' %}
+{% load bootstrap4 %}
+
+{% block header %}
+
+  {% include 'blog_app/_post_detail.html' with hide_delete=True %}
+
+{% endblock %}

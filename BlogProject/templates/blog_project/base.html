@@ -1,0 +1,88 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Blog</title>
+
+    <script src="{% static 'js/medium-editor.min.js' %}" charset="utf-8"></script>
+    
+    <link href="https://fonts.googleapis.com/css?family=Lora|Oxygen:700" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/medium-editor.min.css' %}" type="text/css" media="screen" charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/beagle.css' %}" type="text/css" media="screen" charset="utf-8">
+
+    <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}" type="text/css" media="screen" charset="utf-8">
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type="text/css" media="screen" charset="utf-8">
+
+    <link rel="stylesheet" href="{% static 'css/master.css' %}">
+
+  </head>
+  <body>
+
+    <nav class="navbar navbar-expand-md sticky-top navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/">Blog</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <div class="navbar-nav ml-auto">
+            <ul class="navbar-nav">
+              {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'blog_app:create' %}"> New Blog</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'blog_app:user_post' username=user.username page=1 %}"> My Blogs</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+              </li>
+              {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'accounts:signup' %}">Signup</a>
+              </li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </nav>
+
+    <div class="container">
+
+      {% if messages %}
+          {% for message in messages %}
+            <div class='alert  {{ message.tags }} alert-dismissible fade show'  role='alert'>{{ message }}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
+      {% endif %}
+
+
+      {% block header %}
+      {% endblock %}
+    </div>
+
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}" charset="utf-8"></script>
+    <script src="{% static 'js/popper.min.js' %}" charset="utf-8"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}" charset="utf-8"></script>
+    <script src="{% static 'js/blog_project.js' %}" charset="utf-8"></script>
+
+    {% block java_script %}
+
+    {% endblock %}
+
+  </body>
+</html>

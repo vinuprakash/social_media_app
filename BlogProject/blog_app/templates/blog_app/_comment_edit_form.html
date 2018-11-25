@@ -1,0 +1,20 @@
+{% load bootstrap4 %}
+
+<div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLongTitle">Edit Comment</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form action="{% url 'blog_app:comment_edit' post_pk=comment.post.pk pk=comment.pk %}" method="post">
+  <div class="modal-body">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+    <input class=" btn btn-outline-dark" type="submit" value="Save Changes">
+  </div>
+
+</form>

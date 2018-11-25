@@ -1,0 +1,23 @@
+{% extends 'blog_project/base.html' %}
+{% block header %}
+
+  <div class="container">
+    {% if form.instance.pk %}
+      <h1>Edit Blog</h1>
+    {% else %}
+      <h1>Create Blog</h1>
+    {% endif %}
+
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit" class="btn btn-lg btn-outline-dark" name="button">Save</button>
+
+      <script>
+        var editor = new MediumEditor('.editable');
+      </script>
+
+    </form>
+  </div>
+
+{% endblock %}

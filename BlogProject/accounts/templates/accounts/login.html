@@ -1,0 +1,15 @@
+{% extends 'blog_project/base.html' %}
+{% load bootstrap4 %}
+
+{% block header %}
+
+  <div class="container">
+    <h1>Log In Form</h1>
+    <form method="post">
+      {% csrf_token %}
+      {% bootstrap_form form %}
+      <input class="btn btn-large btn-dark" type="submit" value="Log In">
+    </form>
+  </div>
+
+{% endblock %}

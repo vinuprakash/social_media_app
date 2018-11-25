@@ -1,0 +1,130 @@
+{% extends 'blog_project/base.html' %}
+{% load humanize %}
+
+{% block header %}
+
+  {% include 'blog_app/_post_detail.html' with hide_delete=False %}
+
+  <div class="modal fade" id="CommentModalLong" tabindex="-1" role="dialog" aria-labelledby="CommentModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="comment-modal">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <div class="add-comment card">
+      <h4 class="card-header">Post a comment</h4>
+      <form action="{% url 'blog_app:comment_create' post_pk=post.pk %}" class="card-body" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="FormControlTextarea">Comment Text</label>
+          <textarea class="form-control" name='content' rows="3"></textarea>
+        </div>
+        <input class="btn btn-md btn-outline-dark" type="submit" value="Post Comment">
+
+      </form>
+    </div>
+
+    {% if post.comments.count > 0 %}
+      <div class="card">
+      <h4 class="comment-heading card-header">Users Comments</h4>
+        {% for comment in post.comments.all %}
+          <div class="card user-comment">
+            <div class="card-header">
+              <a class="username" href="{% url 'blog_app:user_post' username=comment.author.username page=1 %}">{{ comment.author|title }}</a>
+            </div>
+            <div class="card-body">
+              <blockquote class="blockquote mb-0">
+
+                <div class="comment-content">
+                  {{ comment.content|safe }}
+                </div>
+                <footer class="blockquote-footer">commented {{ comment.created_date|naturaltime }} , Edited {{ comment.edited_date|naturaltime }} </footer>
+
+                {% if user.pk == comment.author.pk %}
+                  <div class="comment-edit-delete">
+                    <button type="button" href="{% url 'blog_app:comment_edit' post_pk=post.pk pk=comment.pk %}" class="btn btn-outline-dark btn-comment-edit" data-toggle="modal" data-target="#CommentModalLong">
+                      Edit
+                    </button>
+                    <button type="button" href="{% url 'blog_app:comment_delete' post_pk=post.pk pk=comment.pk %}" class="btn btn-outline-dark btn-comment-delete" data-toggle="modal" data-target="#CommentModalLong">
+                      Delete
+                    </button>
+                  </div>
+                {% endif %}
+
+              </blockquote>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+
+    {% endif %}
+
+  {% endblock %}
+
+  {% block java_script %}
+
+    <script type="text/javascript">
+
+      $(".fa-heart").click(function(){
+        var like_button = $(this)
+
+        $.ajax({
+          url : '{% url 'blog_app:post_like' post_pk=post.pk %}',
+          datatype:'json',
+          success:function(data){
+
+            if(data.is_valid_user){
+              like_button.removeClass(data.remove_class);
+              like_button.addClass(data.add_class);
+              $('#likes-count').text(data.likes_count);
+            }else{
+              $('#jumbotron-container').append(`
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                  You must login inorder to like a post
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+              `);
+            }
+          }
+        });
+      });
+
+      $('.btn-comment-edit').click(function(){
+
+        var edit_url = $(this).attr('href');
+
+        $.ajax({
+          url : edit_url,
+          type : 'GET',
+          datatype: 'json',
+          success:function(data){
+            $('.comment-modal').html(data);
+          }
+        });
+      });
+
+      $('.btn-comment-delete').click(function(){
+
+        var delete_url = $(this).attr('href');
+
+        $.ajax({
+          url : delete_url,
+          type : 'GET',
+          datatype : 'json',
+          success : function(data){
+            $('.comment-modal').html(data);
+          }
+        });
+      });
+
+    </script>
+
+  {% endblock %}

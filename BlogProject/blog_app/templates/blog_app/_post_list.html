@@ -1,0 +1,24 @@
+{% load humanize %}
+
+<div class="container">
+  <div class="post-list">
+    {% for post in object_list %}
+
+      <div class="card text-center">
+        <div class="card-header">
+          <h4><a href=" {% url 'blog_app:user_post' username=post.author.username page=1 %} " class="username"> @{{ post.author.username }} </a></h4>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title"> {{ post.title }} </h5>
+          <p class="card-text"> {{ post.content|safe|linebreaksbr|striptags|truncatechars:"590" }} </p>
+          <a href="{% url 'blog_app:detail' pk=post.pk %}" class="btn btn-outline-dark"> View </a>
+        </div>
+        <div class="card-footer text-muted">
+          {{ post.comments.all.count }} <i class="fas fa-comment-dots"></i>  posted {{ post.created_date|naturaltime }} <i class="fas fa-heart fa-size"></i> {{ post.likes.all.count }}
+        </div>
+      </div>
+
+    {% endfor %}
+
+  </div>
+</div>

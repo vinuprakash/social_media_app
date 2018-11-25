@@ -1,0 +1,33 @@
+<div class="jumbotron jumbotron-fluid" id="jumbotron-container">
+  <div class="container">
+
+    {% if hide_delete %}
+      <h3>Are you sure you want to delete this blog?</h3>
+      <form method="post">
+        {% csrf_token %}
+        <button class="btn btn-lg btn-outline-dark" type="submit">Delete</button>
+      </form>
+    {% endif %}
+
+    <h1 class="display-4"> {{ post.title }} </h1>
+    <p class='lead'> {{ post.content|safe|linebreaksbr }} </p>
+    <hr class="my-4">
+    <p> Author:<a class="username" href="{% url 'blog_app:user_post' username=post.author.username page=1 %}"> @{{ post.author|title }}  </a></p>
+    <p> Created on: {{ post.created_date }} </p>
+    <p> Last edited on: {{ post.edited_date }} </p>
+    <p id="likes-count"> Likes: {{ post.likes.all.count }} </p>
+    <p id="comments-count"> Comments: {{ post.comments.all.count }} </p>
+
+    {% if user.is_authenticated and user.username == post.author.username and hide_delete == False %}
+      <a class="btn btn-outline-dark" href="{% url 'blog_app:edit' pk=post.pk %}">Edit</a>
+      <a class="btn btn-outline-dark" href="{% url 'blog_app:delete' pk=post.pk %}">Delete</a>
+    {% endif %}
+
+    {% if hide_delete is False %}
+      <div class="like-button text-center">
+        <i class="{{ like_class }} fa-heart fa-3x"></i>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
